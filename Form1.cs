@@ -13,10 +13,13 @@ namespace My_Assembly_Code
 {
     public partial class Form1 : Form
     {
-        // Global variables
+        // registers
         int R1 = 0;
         int R2 = 0;
         int R3 = 0;
+
+        //command storage list
+        List<string[]> program = new List<string[]>();
         public Form1()
         {
             InitializeComponent();
@@ -25,16 +28,24 @@ namespace My_Assembly_Code
         {
             rtBoxOutPut.Clear();    // Clear output 
 
+            program.Clear();       // Clear previous program
+
             string[] lines = rtBoxInPut.Text.Split('\n');
             foreach (string inputline in lines)
             {
                 string line = inputline.Trim();
                 if (line == "") continue;
                 string[] parts = line.Split(' ');
-                string command = parts[0];
 
-                // LD 5 R2
-                if (parts[0] == "LD")
+                program.Add(parts);
+            }
+            
+            foreach (string[] parts in program)
+            {
+                 string command = parts[0];
+
+                // LD 
+                if (command == "LD")
                 {
                     int number = int.Parse(parts[1]);
 
