@@ -47,99 +47,68 @@ namespace My_Assembly_Code
                 // LD 
                 if (command == "LD")
                 {
-                    int number = int.Parse(parts[1]);
+                    int value = int.Parse(parts[1]);
 
-                    if (parts[2] == "R1") R1 = number;
-                    if (parts[2] == "R2") R2 = number;
-                    if (parts[2] == "R3") R3 = number;
+                    if (parts[2] == "R1") R1 = value;
+                    if (parts[2] == "R2") R2 = value;
+                    if (parts[2] == "R3") R3 = value;
+                }
+
+                //MOV
+                else if (command == "MOV")
+                {
+                    int value = GetRegister(parts[1]);
+                    SetRegister(parts[2], value);
                 }
 
                 // Add R1, R2, R3
-                else if (parts[0] == "ADD")
+                else if (command == "ADD")
                 {
-                    int value1 = 0;
-                    int value2 = 0;
-
-                    if (parts[1] == "R1") value1 = R1;
-                    if (parts[1] == "R2") value1 = R2;
-                    if (parts[1] == "R3") value1 = R3;
-
-                    if (parts[2] == "R1") value2 = R1;
-                    if (parts[2] == "R2") value2 = R2;
-                    if (parts[2] == "R3") value2 = R3;
-
+                    int value1 = GetRegister(parts[1]);
+                    int value2 = GetRegister(parts[2]);
                     int result = value1 + value2;
 
-                    if (parts[3] == "R1") R1 = result;
-                    if (parts[3] == "R2") R2 = result;
-                    if (parts[3] == "R3") R3 = result;
+                    SetRegister(parts[3], result);
                 }
 
                 // Sub R1, R2, R3
-                else if (parts[0] == "SUB")
+                else if (command == "SUB")
                 {
-                    int value1 = 0;
-                    int value2 = 0;
-
-                    if (parts[1] == "R1") value1 = R1;
-                    if (parts[1] == "R2") value1 = R2;
-                    if (parts[1] == "R3") value1 = R3;
-
-                    if (parts[2] == "R1") value2 = R1;
-                    if (parts[2] == "R2") value2 = R2;
-                    if (parts[2] == "R3") value2 = R3;
-
+                    int value1 = GetRegister(parts[1]);
+                    int value2 = GetRegister(parts[2]);
                     int result = value1 - value2;
 
-                    if (parts[3] == "R1") R1 = result;
-                    if (parts[3] == "R2") R2 = result;
-                    if (parts[3] == "R3") R3 = result;
+                    SetRegister(parts[3], result);
                 }
 
                 // Mul R1, R2, R3
-                else if (parts[0] == "MUL")
+                else if (command == "MUL")
                 {
-                    int value1 = 0;
-                    int value2 = 0;
-
-                    if (parts[1] == "R1") value1 = R1;
-                    if (parts[1] == "R2") value1 = R2;
-                    if (parts[1] == "R3") value1 = R3;
-
-                    if (parts[2] == "R1") value2 = R1;
-                    if (parts[2] == "R2") value2 = R2;
-                    if (parts[2] == "R3") value2 = R3;
-
+                    int value1 = GetRegister(parts[1]);
+                    int value2 = GetRegister(parts[2]);
                     int result = value1 * value2;
 
-                    if (parts[3] == "R1") R1 = result;
-                    if (parts[3] == "R2") R2 = result;
-                    if (parts[3] == "R3") R3 = result;
+                    SetRegister(parts[3], result);
                 }
 
                 // Div R1, R2, R3
-                else if (parts[0] == "DIV")
+                else if (command == "DIV")
                 {
-                    int value1 = 0;
-                    int value2 = 0;
+                    int value1 = GetRegister(parts[1]);
+                    int value2 = GetRegister(parts[2]);
 
-                    if (parts[1] == "R1") value1 = R1;
-                    if (parts[1] == "R2") value1 = R2;
-                    if (parts[1] == "R3") value1 = R3;
-
-                    if (parts[2] == "R1") value2 = R1;
-                    if (parts[2] == "R2") value2 = R2;
-                    if (parts[2] == "R3") value2 = R3;
+                    if (value2 == 0)
+                    {
+                        rtBoxOutPut.AppendText("Error: divide by zero\n");
+                        continue;
+                    }
 
                     int result = value1 / value2;
-
-                    if (parts[3] == "R1") R1 = result;
-                    if (parts[3] == "R2") R2 = result;
-                    if (parts[3] == "R3") R3 = result;
+                    SetRegister(parts[3], result);
                 }
 
                 // Trp R3  
-                else if (parts[0] == "TRP")
+                else if (command == "TRP")
                 {
                     if (parts[1] == "3")
                     {
@@ -148,10 +117,74 @@ namespace My_Assembly_Code
                 }
             }
 
-            // Update labels
+            // update UI
             labelR1.Text = "R1: " + R1;
             labelR2.Text = "R2: " + R2;
             labelR3.Text = "R3: " + R3;
+        }
+
+        //get register value 
+        private int GetRegister(string reg)
+        {
+            if (reg == "R1") return R1;
+            if (reg == "R2") return R2;
+            if (reg == "R3") return R3;
+
+            return int.Parse(reg); // allows numbers like 5
+        }
+
+        //set register value
+        private void SetRegister(string reg, int value)
+        {
+            if (reg == "R1") R1 = value;
+            else if (reg == "R2") R2 = value;
+            else if (reg == "R3") R3 = value;
+        }
+
+        //unit test
+        private void RunTests()
+        {
+            rtBoxOutPut.AppendText("\n--- Running Tests ---\n");
+
+            // positive test: ADD
+
+            R1 = 5;
+            R2 = 10;
+            R3 = 0;
+
+            int result = GetRegister("R1") + GetRegister("R2");
+            SetRegister("R3", result);
+
+            if (R3 == 15)
+                rtBoxOutPut.AppendText("PASS: ADD test\n");
+            else
+                rtBoxOutPut.AppendText("FAIL: ADD test\n");
+
+            // positive test: MOV
+
+            R1 = 20;
+            R2 = 0;
+
+            SetRegister("R2", GetRegister("R1"));
+
+            if (R2 == 20)
+                rtBoxOutPut.AppendText("PASS: MOV test\n");
+            else
+                rtBoxOutPut.AppendText("FAIL: MOV test\n");
+
+            // negative test: DIV by zero
+            try
+            {
+                int a = 10;
+                int b = 0;
+                int x = a / b;
+
+                rtBoxOutPut.AppendText("FAIL: DIV by zero not handled\n");
+            }
+            catch
+            {
+                rtBoxOutPut.AppendText("PASS: DIV by zero handled\n");
+            }
         }
     }
 }
